@@ -1,11 +1,15 @@
 import numpy as np
 from models.model import NeuralNetwork
 from models.layers import Linear, ReLU, Sigmoid
+from models.losses import BinaryCrossEntropy
+
+# Set seed for reproducibility
+np.random.seed(42)
 
 # Dummy input: 2 features, 5 samples
 x = np.random.randn(2, 5)
 
-# Dummy ground truth: 1 output per sample
+# Dummy binary labels: shape (1, 5)
 y_true = np.array([[0, 1, 0, 1, 1]])
 
 # Initialize model
@@ -20,7 +24,11 @@ y_pred = model.forward(x)
 print("Forward output (y_pred):")
 print(y_pred)
 
-# Backward pass with dummy gradient (pretend we used loss)
-# We’ll fake a loss gradient for now until we write real loss
-grad_output = y_pred - y_true  # Gradient of MSE or BCE-like loss
-model.backward(grad_output, learning_rate=0.01)
+# Calculate loss
+loss_fn = BinaryCrossEntropy()
+loss = loss_fn.forward(y_pred, y_true)
+print("\nLoss:", loss)
+
+# Backward pass
+grad = loss_fn.backward()
+model.backward(grad, learning_rate=0.01)
